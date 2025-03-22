@@ -1,0 +1,588 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConnectWallet from '../components/ConnectWallet.astro';
+import '../styles/dashboard.css';
+---
+
+<Layout title="Stellar ChainSaver - Bloqueo de Fondos con Tiempo">
+  <div class="landing-container">
+    <header class="landing-header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        <span>Stellar ChainSaver</span>
+      </div>
+    </header>
+
+    <section class="hero-section">
+      <h1 class="hero-title">Guarda tus fondos de forma segura</h1>
+      <p class="hero-subtitle">Bloquea tus XLM por el tiempo que determines y alcanza tus metas de ahorro</p>
+      
+      <div class="connect-wallet-container">
+        <ConnectWallet />
+        <p class="connect-prompt">Conecta tu wallet para comenzar a ahorrar</p>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <h2 class="section-title">Características</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3 class="feature-title">Bloqueo Temporal</h3>
+          <p class="feature-desc">Bloquea tus fondos por un tiempo determinado para evitar gastarlos impulsivamente.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+          </div>
+          <h3 class="feature-title">Ahorro Inteligente</h3>
+          <p class="feature-desc">Establece metas específicas para tus ahorros y visualiza tu progreso en tiempo real.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="feature-title">Seguridad Blockchain</h3>
+          <p class="feature-desc">Tus fondos están asegurados por la tecnología blockchain de Stellar. Sin intermediarios.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <h2 class="section-title">Cómo funciona</h2>
+      
+      <div class="demo-steps">
+        <div class="demo-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Conecta tu wallet</h3>
+            <p class="step-desc">Usa tu wallet de Stellar para conectarte de forma segura.</p>
+          </div>
+        </div>
+        
+        <div class="demo-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Establece una meta</h3>
+            <p class="step-desc">Define cuánto quieres ahorrar y por cuánto tiempo.</p>
+          </div>
+        </div>
+        
+        <div class="demo-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Bloquea tus fondos</h3>
+            <p class="step-desc">Tus XLM quedarán bloqueados hasta que se cumpla el plazo establecido.</p>
+          </div>
+        </div>
+        
+        <div class="demo-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">¡Alcanza tus metas!</h3>
+            <p class="step-desc">Cuando expire el tiempo, podrás retirar tus fondos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-section">
+      <h2 class="section-title">Vista previa</h2>
+      
+      <div class="dashboard-preview">
+        <div class="preview-card">
+          <div class="preview-header">
+            <h3>Tus metas de ahorro</h3>
+          </div>
+          <div class="preview-content">
+            <div class="preview-goal">
+              <div class="preview-goal-icon house-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="preview-goal-details">
+                <div class="preview-goal-name">Casa</div>
+                <div class="preview-progress">
+                  <div class="preview-progress-bar">
+                    <div class="preview-progress-fill" style="width: 65%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="preview-goal">
+              <div class="preview-goal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/></svg>
+              </div>
+              <div class="preview-goal-details">
+                <div class="preview-goal-name">Vacaciones</div>
+                <div class="preview-progress">
+                  <div class="preview-progress-bar">
+                    <div class="preview-progress-fill" style="width: 30%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-blur-overlay">
+              <div class="connect-message">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <p>Conecta tu wallet para ver más</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-container">
+        <h2 class="cta-title">¿Listo para empezar a ahorrar?</h2>
+        <p class="cta-subtitle">Conecta tu wallet de Stellar y comienza tu viaje hacia el ahorro inteligente</p>
+        <div class="cta-connect">
+          <ConnectWallet />
+        </div>
+      </div>
+    </section>
+
+    <footer class="landing-footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+          <span>Stellar ChainSaver</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">Términos</a>
+          <a href="#">Privacidad</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Animation for elements when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section');
+      
+      // Animate sections one after another
+      sections.forEach((section, index) => {
+        setTimeout(() => {
+          section.classList.add('animate-in');
+        }, 150 * (index + 1));
+      });
+
+      // Animate progress bars
+      setTimeout(() => {
+        const progressBars = document.querySelectorAll('.preview-progress-fill') as NodeListOf<HTMLElement>;
+        progressBars.forEach(bar => {
+          bar.style.transition = 'width 1.5s ease-in-out';
+          bar.style.width = bar.style.width;
+        });
+      }, 800);
+      
+      // Check for wallet connection events
+      document.addEventListener('stellar-wallet-connected', () => {
+        window.location.href = '/dashboard';
+      });
+    });
+  </script>
+</Layout>
+
+<style>
+  /* Variables que usan la paleta de colores del dashboard */
+  :root {
+    --primary-color: var(--primary-color, #3dd598);
+    --secondary-color: var(--secondary-color, #4c6fff);
+    --background-color: var(--background-color, #f8f9fb);
+    --card-color: var(--card-color, #ffffff);
+    --text-color: var(--text-color, #2e3a59);
+    --text-secondary: var(--text-secondary, #8f9bb3);
+    --border-color: var(--border-color, #edf1f7);
+    --success-color: var(--success-color, #3dd598);
+    --border-radius: var(--border-radius, 16px);
+    --shadow: var(--shadow, 0 4px 20px rgba(0, 0, 0, 0.05));
+  }
+
+  .landing-container {
+    max-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .landing-header {
+    display: flex;
+    padding: 1rem;
+    align-items: center;
+    background-color: var(--card-color);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+  
+  section {
+    padding: 2rem 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    margin-bottom: 2rem;
+  }
+  
+  section.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    color: var(--text-secondary);
+  }
+  
+  .connect-wallet-container {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .connect-prompt {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--text-color);
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .feature-card {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .feature-icon {
+    background-color: rgba(61, 213, 152, 0.1);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+  
+  .feature-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  .feature-desc {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+  
+  .demo-steps {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .demo-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .step-number {
+    background-color: var(--primary-color);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  
+  .step-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  .step-desc {
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  
+  .preview-section {
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+  }
+  
+  .dashboard-preview {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .preview-card {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  
+  .preview-header {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    text-align: center;
+    color: white;
+  }
+  
+  .preview-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  .preview-content {
+    padding: 1.5rem;
+    position: relative;
+  }
+  
+  .preview-goal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .preview-goal-icon {
+    background-color: rgba(61, 213, 152, 0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+  }
+  
+  .preview-goal-details {
+    flex: 1;
+  }
+  
+  .preview-goal-name {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .preview-progress {
+    margin-top: 0.5rem;
+  }
+  
+  .preview-progress-bar {
+    height: 6px;
+    background-color: #e4e9f2;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  
+  .preview-progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0;
+  }
+  
+  .preview-blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .connect-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-color);
+    text-align: center;
+  }
+  
+  .connect-message svg {
+    color: var(--primary-color);
+  }
+  
+  .cta-section {
+    background: var(--card-color);
+    border-radius: var(--border-radius);
+    margin: 2rem 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--primary-color);
+  }
+  
+  .cta-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .cta-subtitle {
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.5;
+  }
+  
+  .cta-connect {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .landing-footer {
+    margin-top: auto;
+    padding: 2rem;
+    background-color: var(--card-color);
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    color: var(--primary-color);
+  }
+  
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+    
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  /* Mejoras para pantallas más grandes */
+  @media (min-width: 768px) {
+    section {
+      padding: 3rem 2rem;
+    }
+    
+    .landing-container {
+      padding: 0 0 0;
+    }
+    
+    .hero-section {
+      padding: 5rem 2rem;
+    }
+    
+    .preview-section {
+      padding: 3rem;
+    }
+  }
+</style> 
