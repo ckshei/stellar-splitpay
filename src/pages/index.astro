@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
-import helloWorld from "../contracts/hello_world";
+import helloWorld from "../contracts/hello_world.ts";
 import ConnectWallet from '../components/ConnectWallet.astro'
 import Counter from '../components/Counter.astro';
 const { result } = await helloWorld.hello({ to: "you" });
