@@ -8,6 +8,8 @@ use soroban_sdk::{contract, contractimpl, contracttype, token, Address, Env, Vec
 pub enum DataKey {
     Init,
     Balance,
+    Initializer,          // Store the address that initialized this contract
+    DeployedContracts,    // Map from address to list of contracts they initialized
 }
 
 #[derive(Clone)]
@@ -69,6 +71,7 @@ impl ClaimableBalanceContract {
 
         // Transfer token from `from` to this contract address.
         token::Client::new(&env, &token).transfer(&from, &env.current_contract_address(), &amount);
+        
         // Store all the necessary info to allow one of the claimants to claim it.
         env.storage().instance().set(
             &DataKey::Balance,
@@ -79,9 +82,25 @@ impl ClaimableBalanceContract {
                 claimants,
             },
         );
+        
+        // Store the initializer address
+        env.storage().instance().set(&DataKey::Initializer, &from);
+        
+        // Get current list of contracts deployed by this address or create new empty list
+        let mut contracts: Vec<Address> = env.storage()
+            .persistent()
+            .get(&(DataKey::DeployedContracts, from.clone()))
+            .unwrap_or_else(|| Vec::new(&env));
+            
+        // Add this contract to the list
+        contracts.push_back(env.current_contract_address());
+        
+        // Update the persistent storage with the new list
+        env.storage()
+            .persistent()
+            .set(&(DataKey::DeployedContracts, from), &contracts);
+            
         // Mark contract as initialized to prevent double-usage.
-        // Note, that this is just one way to approach initialization - it may
-        // be viable to allow one contract to manage several claimable balances.
         env.storage().instance().set(&DataKey::Init, &());
     }
 
@@ -112,6 +131,19 @@ impl ClaimableBalanceContract {
         );
         // Remove the balance entry to prevent any further claims.
         env.storage().instance().remove(&DataKey::Balance);
+    }
+    
+    // New method to get all contracts initialized by a specific address
+    pub fn get_contracts_by_initializer(env: Env, initializer: Address) -> Vec<Address> {
+        env.storage()
+            .persistent()
+            .get(&(DataKey::DeployedContracts, initializer))
+            .unwrap_or_else(|| Vec::new(&env))
+    }
+    
+    // Optional: Get the initializer of the current contract
+    pub fn get_initializer(env: Env) -> Address {
+        env.storage().instance().get(&DataKey::Initializer).unwrap()
     }
 }
 
