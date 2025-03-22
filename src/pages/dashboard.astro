@@ -1,0 +1,251 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/dashboard.css';
+---
+
+<Layout title="Crypto Savings Dashboard">
+  <div class="dashboard">
+    <header class="header">
+      <div class="menu-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </div>
+    </header>
+
+    <section class="balance-card">
+      <div class="balance-info">
+        <div class="avatar">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar" />
+        </div>
+        <div class="balance-text">
+          <span class="balance-label">Total Balance</span>
+          <h2 class="balance-amount">$54,967</h2>
+        </div>
+      </div>
+      <div class="balance-actions">
+        <button class="icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </button>
+        <button class="icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="goals-section">
+      <h3 class="section-title">Current goals</h3>
+      
+      <div class="goals-container">
+        <div class="goal-card">
+          <div class="goal-icon house-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="goal-details">
+            <div class="goal-header">
+              <h4 class="goal-name">House</h4>
+              <div class="goal-date">
+                <span>START 02/02/2024</span>
+              </div>
+            </div>
+            <div class="goal-balance">
+              <span>Balance: <strong>$30,950</strong></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 95%;"></div>
+            </div>
+            <div class="goal-timer">
+              <div class="timer-unit">
+                <span class="timer-value">18</span>
+                <span class="timer-label">DAYS</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">23</span>
+                <span class="timer-label">HOURS</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">58</span>
+                <span class="timer-label">MIN</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">30</span>
+                <span class="timer-label">SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="goal-card">
+          <div class="goal-icon imac-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          </div>
+          <div class="goal-details">
+            <div class="goal-header">
+              <h4 class="goal-name">iMac</h4>
+              <div class="goal-date">
+                <span>START 01/01/2025</span>
+              </div>
+            </div>
+            <div class="goal-balance">
+              <span>Balance: <strong>$1,450</strong></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 40%;"></div>
+            </div>
+            <div class="goal-timer">
+              <div class="timer-unit">
+                <span class="timer-value">20</span>
+                <span class="timer-label">DAYS</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">17</span>
+                <span class="timer-label">HOURS</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">32</span>
+                <span class="timer-label">MIN</span>
+              </div>
+              <div class="timer-unit">
+                <span class="timer-value">54</span>
+                <span class="timer-label">SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="success-section">
+      <h3 class="section-title">Successful saving</h3>
+      
+      <div class="success-grid">
+        <div class="success-item">
+          <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          </div>
+          <div class="success-name">Laptop</div>
+          <div class="success-amount">$2,000</div>
+        </div>
+        <div class="success-item">
+          <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          </div>
+          <div class="success-name">TV 4K</div>
+          <div class="success-amount">$8,000</div>
+        </div>
+        <div class="success-item">
+          <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2 2"/></svg>
+          </div>
+          <div class="success-name">Rolex</div>
+          <div class="success-amount">$15,000</div>
+        </div>
+        <div class="success-item">
+          <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.6-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.3 1 12.1 1 13v3c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+          </div>
+          <div class="success-name">Car</div>
+          <div class="success-amount">$20,000</div>
+        </div>
+      </div>
+
+      <div class="success-footer">
+        <div class="success-message">
+          <div class="success-check">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <span>Well Done, keep saving!</span>
+        </div>
+        <a href="#" class="see-all">
+          <span>SEE THEM ALL</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="new-goal-section">
+      <h3 class="section-title">New Goal</h3>
+      
+      <div class="new-goal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" placeholder="Name your goal" class="form-control" />
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="Amount to save" class="form-control" />
+          </div>
+        </div>
+        <div class="form-row date-row">
+          <span>Select the end date</span>
+          <input type="date" id="goalDate" class="form-control" style="display:none;">
+          <button class="calendar-button" onclick="document.getElementById('goalDate').click()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          </button>
+        </div>
+        <div class="form-actions">
+          <button class="create-button">
+            <span>CREATE</span>
+            <div class="create-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    // Animation for elements when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section');
+      
+      // Animate sections one after another
+      sections.forEach((section, index) => {
+        setTimeout(() => {
+          section.classList.add('animate-in');
+        }, 100 * (index + 1));
+      });
+
+      // Animate progress bars
+      setTimeout(() => {
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+          bar.style.transition = 'width 1.5s ease-in-out';
+          bar.style.width = bar.style.width;
+        });
+      }, 500);
+
+      // Simple countdown timer simulation
+      setInterval(() => {
+        const timerValues = document.querySelectorAll('.timer-value');
+        timerValues.forEach(timer => {
+          let value = parseInt(timer.textContent);
+          if (value > 0) {
+            value--;
+          } else {
+            // Reset to a random value for demo purposes
+            const max = timer.closest('.timer-unit').querySelector('.timer-label').textContent === 'SEC' ? 59 : 
+                       timer.closest('.timer-unit').querySelector('.timer-label').textContent === 'MIN' ? 59 : 
+                       timer.closest('.timer-unit').querySelector('.timer-label').textContent === 'HOURS' ? 23 : 30;
+            value = Math.floor(Math.random() * max);
+          }
+          timer.textContent = value.toString().padStart(2, '0');
+        });
+      }, 1000);
+    });
+  </script>
+</Layout>
+

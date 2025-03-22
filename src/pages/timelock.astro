@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ConnectWallet from '../components/ConnectWallet.astro';
+import TimeLock from '../components/TimeLock.astro';
+---
+
+<Layout title="Bloqueo Temporal de Fondos - Stellar ChainSaver">
+  <main>
+    <h1>Stellar ChainSaver</h1>
+    <p class="description">
+      Bloquea tus fondos Stellar por un tiempo determinado. Ideal para ahorros o compromisos temporales.
+    </p>
+    
+    <ConnectWallet />
+    
+    <div class="timelock-container">
+      <TimeLock />
+    </div>
+    
+    <div class="info-box">
+      <h2>¿Cómo funciona?</h2>
+      <ol>
+        <li>Conecta tu wallet Stellar</li>
+        <li>Ingresa la cantidad de XLM que quieres bloquear</li>
+        <li>Selecciona por cuánto tiempo quieres bloquear tus fondos</li>
+        <li>Confirma la transacción en tu wallet</li>
+        <li>Cuando transcurra el tiempo, podrás retirar tus fondos</li>
+      </ol>
+      <p class="note">
+        <strong>Nota:</strong> Una vez bloqueados, los fondos no podrán ser retirados hasta que expire el tiempo seleccionado.
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 800px;
+    color: white;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+    background-image: linear-gradient(45deg, rgb(var(--accent-light)), #60cdff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  
+  .description {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .timelock-container {
+    margin: 2rem 0;
+  }
+  
+  .info-box {
+    background-color: rgba(var(--accent-dark), 20%);
+    border: 1px solid rgba(var(--accent-light), 20%);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .info-box h2 {
+    margin-top: 0;
+    color: rgb(var(--accent-light));
+  }
+  
+  .info-box ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .info-box li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .note {
+    margin-top: 1rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.8);
+  }
+</style> 

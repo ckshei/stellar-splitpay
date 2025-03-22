@@ -1,0 +1,332 @@
+<div class="time-lock-container">
+  <h2>Bloqueo Temporal de Fondos</h2>
+  
+  <div id="wallet-not-connected" class="wallet-message">
+    <p>Por favor conecta tu wallet para utilizar esta función.</p>
+  </div>
+  
+  <div id="wallet-connected" class="form-container" style="display:none;">
+    <div class="input-group">
+      <label for="amount">Monto a bloquear (XLM):</label>
+      <input type="number" id="amount" min="0.1" step="0.1" placeholder="Cantidad en XLM" />
+    </div>
+    
+    <div class="input-group">
+      <label for="duration">Duración del bloqueo:</label>
+      <select id="duration">
+        <option value="300">5 minutos (demostración)</option>
+        <option value="3600">1 hora</option>
+        <option value="86400">1 día</option>
+        <option value="604800">1 semana</option>
+        <option value="2592000">30 días</option>
+      </select>
+    </div>
+    
+    <button id="lock-funds-btn">Bloquear Fondos</button>
+  </div>
+  
+  <div id="active-locks" class="active-locks">
+    <h3>Fondos Bloqueados Activos</h3>
+    <div id="locks-list">
+      <!-- Aquí se mostrarán los fondos bloqueados -->
+      <p class="no-locks">No hay fondos bloqueados actualmente.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import timeLockContract from "../contracts/timeLock";
+  import { getPublicKey, signTransaction } from "../stellar-wallets-kit";
+  
+  // Elementos del DOM
+  const walletNotConnected = document.getElementById('wallet-not-connected') as HTMLDivElement;
+  const walletConnected = document.getElementById('wallet-connected') as HTMLDivElement;
+  const amountInput = document.getElementById('amount') as HTMLInputElement;
+  const durationSelect = document.getElementById('duration') as HTMLSelectElement;
+  const lockFundsBtn = document.getElementById('lock-funds-btn') as HTMLButtonElement;
+  const locksList = document.getElementById('locks-list') as HTMLDivElement;
+  
+  // Almacenamiento local de bloqueos
+  let activeLocks = JSON.parse(localStorage.getItem('activeLocks') || '[]');
+  
+  // Verificar estado de la wallet y actualizar UI
+  async function checkWalletConnection() {
+    const publicKey = await getPublicKey();
+    if (publicKey) {
+      walletNotConnected.style.display = 'none';
+      walletConnected.style.display = 'block';
+      
+      // Configurar el contrato con la wallet conectada
+      timeLockContract.options.publicKey = publicKey;
+      timeLockContract.options.signTransaction = signTransaction;
+      
+      return true;
+    } else {
+      walletNotConnected.style.display = 'block';
+      walletConnected.style.display = 'none';
+      return false;
+    }
+  }
+  
+  // Mostrar bloqueos activos al cargar
+  function renderActiveLocks() {
+    if (activeLocks.length === 0) {
+      locksList.innerHTML = '<p class="no-locks">No hay fondos bloqueados actualmente.</p>';
+      return;
+    }
+    
+    locksList.innerHTML = '';
+    const currentTime = Math.floor(Date.now() / 1000);
+    
+    activeLocks.forEach((lock: any, index: number) => {
+      const remainingSeconds = Math.max(0, lock.unlockTime - currentTime);
+      const isUnlockable = remainingSeconds <= 0;
+      
+      const lockElement = document.createElement('div');
+      lockElement.className = `lock-item ${isUnlockable ? 'unlockable' : ''}`;
+      lockElement.innerHTML = `
+        <div>
+          <strong>ID:</strong> ${lock.lockId}
+          <strong>Monto:</strong> ${lock.amount} XLM
+          <strong>Estado:</strong> ${isUnlockable ? 'Desbloqueado' : 'Bloqueado'}
+        </div>
+        <div>
+          ${isUnlockable 
+            ? `<button class="withdraw-btn" data-index="${index}">Retirar Fondos</button>` 
+            : `<div class="countdown">Tiempo restante: ${formatTime(remainingSeconds)}</div>`
+          }
+        </div>
+      `;
+      
+      locksList.appendChild(lockElement);
+    });
+    
+    // Añadir event listeners a los botones de retiro
+    document.querySelectorAll('.withdraw-btn').forEach(btn => {
+      btn.addEventListener('click', handleWithdraw);
+    });
+  }
+  
+  // Formatear tiempo en formato legible
+  function formatTime(seconds: number) {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    let result = '';
+    if (days > 0) result += `${days}d `;
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0) result += `${minutes}m `;
+    result += `${secs}s`;
+    
+    return result;
+  }
+  
+  // Manejar el bloqueo de fondos
+  async function handleLockFunds() {
+    try {
+      // Verificar conexión de wallet
+      if (!await checkWalletConnection()) {
+        alert('Por favor conecte su wallet primero');
+        return;
+      }
+      
+      const amount = amountInput.value;
+      const durationInSeconds = parseInt(durationSelect.value, 10);
+      
+      if (!amount || parseFloat(amount) <= 0) {
+        alert('Por favor ingrese un monto válido');
+        return;
+      }
+      
+      lockFundsBtn.disabled = true;
+      lockFundsBtn.textContent = 'Procesando...';
+      
+      // Bloquear fondos
+      const tx = await timeLockContract.lockFunds({
+        amount,
+        durationInSeconds
+      });
+      
+      const result = await tx.signAndSend();
+      
+      // Guardar el bloqueo en almacenamiento local
+      activeLocks.push({
+        lockId: result.lockId,
+        unlockTime: result.unlockTime,
+        amount: result.amount
+      });
+      
+      localStorage.setItem('activeLocks', JSON.stringify(activeLocks));
+      
+      // Actualizar UI
+      renderActiveLocks();
+      amountInput.value = '';
+      
+      alert('Fondos bloqueados exitosamente');
+    } catch (error: any) {
+      console.error('Error al bloquear fondos:', error);
+      alert(`Error: ${error.message || 'Error desconocido'}`);
+    } finally {
+      lockFundsBtn.disabled = false;
+      lockFundsBtn.textContent = 'Bloquear Fondos';
+    }
+  }
+  
+  // Manejar el retiro de fondos
+  async function handleWithdraw(event: Event) {
+    // Verificar conexión de wallet
+    if (!await checkWalletConnection()) {
+      alert('Por favor conecte su wallet primero');
+      return;
+    }
+    
+    const button = event.target as HTMLButtonElement;
+    const index = parseInt(button.getAttribute('data-index') || '0', 10);
+    const lock = activeLocks[index];
+    
+    try {
+      button.disabled = true;
+      button.textContent = 'Procesando...';
+      
+      // Retirar fondos
+      const tx = await timeLockContract.withdrawFunds({
+        lockId: lock.lockId
+      });
+      
+      await tx.signAndSend();
+      
+      // Eliminar el bloqueo de almacenamiento local
+      activeLocks.splice(index, 1);
+      localStorage.setItem('activeLocks', JSON.stringify(activeLocks));
+      
+      // Actualizar UI
+      renderActiveLocks();
+      
+      alert('Fondos retirados exitosamente');
+    } catch (error: any) {
+      console.error('Error al retirar fondos:', error);
+      alert(`Error: ${error.message || 'Error desconocido'}`);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Retirar Fondos';
+      }
+    }
+  }
+  
+  // Inicializar
+  lockFundsBtn.addEventListener('click', handleLockFunds);
+  
+  // Actualizar la UI cada segundo para actualizar los contadores
+  setInterval(renderActiveLocks, 1000);
+  
+  // Detectar cambios en la conexión de la wallet
+  // Escuchar eventos de conexión/desconexión
+  document.addEventListener('stellar-wallet-connected', checkWalletConnection);
+  document.addEventListener('stellar-wallet-disconnected', checkWalletConnection);
+  
+  // Comprobar el estado inicial de la wallet
+  checkWalletConnection();
+  
+  // Renderizar bloqueos iniciales
+  renderActiveLocks();
+</script>
+
+<style>
+  .time-lock-container {
+    background-color: rgba(var(--accent-dark), 33%);
+    border: 1px solid rgba(var(--accent-light), 25%);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  .wallet-message {
+    text-align: center;
+    padding: 20px;
+    border: 1px dashed rgba(var(--accent-light), 40%);
+    border-radius: 6px;
+    margin: 20px 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .form-container {
+    margin: 20px 0;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(var(--accent-light), 50%);
+    background-color: rgba(var(--accent-dark), 50%);
+    color: white;
+  }
+  
+  button {
+    background-color: rgb(var(--accent-light));
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: rgba(var(--accent-light), 80%);
+  }
+  
+  button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  
+  .active-locks {
+    margin-top: 20px;
+  }
+  
+  .lock-item {
+    background-color: rgba(var(--accent-dark), 50%);
+    border: 1px solid rgba(var(--accent-light), 30%);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .lock-item.unlockable {
+    border-color: rgb(var(--accent-light));
+  }
+  
+  .countdown {
+    font-family: monospace;
+    color: rgb(var(--accent-light));
+  }
+  
+  .no-locks {
+    font-style: italic;
+    color: #aaa;
+  }
+  
+  .withdraw-btn {
+    padding: 5px 10px;
+    font-size: 0.9em;
+  }
+</style> 
