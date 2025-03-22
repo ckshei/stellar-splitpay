@@ -1221,6 +1221,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-splitpay-contract"
+version = "0.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "soroban-timelock-contract"
 version = "0.0.0"
 dependencies = [
