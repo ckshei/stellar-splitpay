@@ -1,154 +1,200 @@
-//! For simplicity, the contract only supports invoker-based auth.
 #![no_std]
+use soroban_sdk::{
+    contract, contractimpl, contracttype, 
+    Address, Env, Vec, Map,
+    symbol_short, token, unwrap::UnwrapOptimized,
+};
 
-use soroban_sdk::{contract, contractimpl, contracttype, token, Address, Env, Vec};
+#[contracttype]
+pub struct TimeLock {
+    lock_id: u64,
+    amount: i128,
+    unlock_time: u64,
+    max_amount: i128,
+}
 
-#[derive(Clone)]
 #[contracttype]
 pub enum DataKey {
-    Init,
-    Balance,
-    Initializer,          // Store the address that initialized this contract
-    DeployedContracts,    // Map from address to list of contracts they initialized
+    TimeLock(Address, u64), // User address and lock ID
+    UserLocks(Address),     // Maps a user to their lock IDs
+    NextLockId,
+    Admin,
 }
 
-#[derive(Clone)]
-#[contracttype]
-pub enum TimeBoundKind {
-    Before,
-    After,
+fn get_token_admin(e: &Env) -> Address {
+    e.storage().instance().get(&DataKey::Admin).unwrap_or_else(|| {
+        panic!("admin not set")
+    })
 }
 
-#[derive(Clone)]
-#[contracttype]
-pub struct TimeBound {
-    pub kind: TimeBoundKind,
-    pub timestamp: u64,
+fn verify_admin(e: &Env, admin: &Address) {
+    admin.require_auth();
+    let stored_admin = get_token_admin(e);
+    if *admin != stored_admin {
+        panic!("not authorized by admin");
+    }
 }
 
-#[derive(Clone)]
-#[contracttype]
-pub struct ClaimableBalance {
-    pub token: Address,
-    pub amount: i128,
-    pub claimants: Vec<Address>,
-    pub time_bound: TimeBound,
+fn get_time_lock(e: &Env, user: &Address, lock_id: u64) -> Option<TimeLock> {
+    e.storage().instance().get(&DataKey::TimeLock(user.clone(), lock_id))
+}
+
+fn get_user_locks(e: &Env, user: &Address) -> Vec<u64> {
+    e.storage().instance().get(&DataKey::UserLocks(user.clone())).unwrap_or_else(|| {
+        Vec::new(e)
+    })
+}
+
+fn get_next_lock_id(e: &Env) -> u64 {
+    e.storage().instance().get(&DataKey::NextLockId).unwrap_or(0)
+}
+
+fn increment_lock_id(e: &Env) -> u64 {
+    let current_id = get_next_lock_id(e);
+    let new_id = current_id + 1;
+    e.storage().instance().set(&DataKey::NextLockId, &new_id);
+    new_id
 }
 
 #[contract]
-pub struct ClaimableBalanceContract;
-
-// The 'timelock' part: check that provided timestamp is before/after
-// the current ledger timestamp.
-fn check_time_bound(env: &Env, time_bound: &TimeBound) -> bool {
-    let ledger_timestamp = env.ledger().timestamp();
-
-    match time_bound.kind {
-        TimeBoundKind::Before => ledger_timestamp <= time_bound.timestamp,
-        TimeBoundKind::After => ledger_timestamp >= time_bound.timestamp,
-    }
-}
+pub struct TimelockContract;
 
 #[contractimpl]
-impl ClaimableBalanceContract {
+impl TimelockContract {
+    pub fn init(e: Env, admin: Address) {
+        e.storage().instance().set(&DataKey::Admin, &admin);
+        e.storage().instance().set(&DataKey::NextLockId, &0u64);
+    }
+
+    pub fn create_lock(
+        e: Env,
+        user: Address,
+        max_amount: i128,
+        lock_period: u64,
+    ) -> u64 {
+        user.require_auth();
+
+        if max_amount <= 0 {
+            panic!("max_amount must be positive");
+        }
+
+        let current_time = e.ledger().timestamp();
+        let unlock_time = current_time + lock_period;
+        
+        // Get a new lock ID
+        let lock_id = increment_lock_id(&e);
+        
+        // Create a new timelock with zero initial amount
+        let new_lock = TimeLock {
+            lock_id,
+            amount: 0,
+            unlock_time,
+            max_amount,
+        };
+        
+        // Store the new lock
+        e.storage().instance().set(&DataKey::TimeLock(user.clone(), lock_id), &new_lock);
+        
+        // Add the lock ID to the user's list of locks
+        let mut user_locks = get_user_locks(&e, &user);
+        user_locks.push_back(lock_id);
+        e.storage().instance().set(&DataKey::UserLocks(user.clone()), &user_locks);
+        
+        lock_id
+    }
+
     pub fn deposit(
-        env: Env,
-        from: Address,
-        token: Address,
+        e: Env,
+        token_id: Address,
+        user: Address,
+        lock_id: u64,
         amount: i128,
-        claimants: Vec<Address>,
-        time_bound: TimeBound,
     ) {
-        if claimants.len() > 10 {
-            panic!("too many claimants");
-        }
-        if is_initialized(&env) {
-            panic!("contract has been already initialized");
-        }
-        // Make sure `from` address authorized the deposit call with all the
-        // arguments.
-        from.require_auth();
+        user.require_auth();
 
-        // Transfer token from `from` to this contract address.
-        token::Client::new(&env, &token).transfer(&from, &env.current_contract_address(), &amount);
+        if amount <= 0 {
+            panic!("amount must be positive");
+        }
+
+        let mut timelock = get_time_lock(&e, &user, lock_id).unwrap_optimized();
         
-        // Store all the necessary info to allow one of the claimants to claim it.
-        env.storage().instance().set(
-            &DataKey::Balance,
-            &ClaimableBalance {
-                token,
-                amount,
-                time_bound,
-                claimants,
-            },
-        );
+        // Check if we're still within the maximum
+        if timelock.amount + amount > timelock.max_amount {
+            panic!("deposit would exceed maximum amount");
+        }
         
-        // Store the initializer address
-        env.storage().instance().set(&DataKey::Initializer, &from);
-        
-        // Get current list of contracts deployed by this address or create new empty list
-        let mut contracts: Vec<Address> = env.storage()
-            .persistent()
-            .get(&(DataKey::DeployedContracts, from.clone()))
-            .unwrap_or_else(|| Vec::new(&env));
-            
-        // Add this contract to the list
-        contracts.push_back(env.current_contract_address());
-        
-        // Update the persistent storage with the new list
-        env.storage()
-            .persistent()
-            .set(&(DataKey::DeployedContracts, from), &contracts);
-            
-        // Mark contract as initialized to prevent double-usage.
-        env.storage().instance().set(&DataKey::Init, &());
+        // Update the timelock with new amount
+        timelock.amount += amount;
+        e.storage().instance().set(&DataKey::TimeLock(user.clone(), lock_id), &timelock);
+
+        // Transfer tokens from user to contract
+        let client = token::Client::new(&e, &token_id);
+        client.transfer(&user, &e.current_contract_address(), &amount);
     }
 
-    pub fn claim(env: Env, claimant: Address) {
-        // Make sure claimant has authorized this call, which ensures their
-        // identity.
-        claimant.require_auth();
-        // Just get the balance - if it's been claimed, this will simply panic
-        // and terminate the contract execution.
-        let claimable_balance: ClaimableBalance =
-            env.storage().instance().get(&DataKey::Balance).unwrap();
+    pub fn withdraw(e: Env, token_id: Address, user: Address, lock_id: u64) -> i128 {
+        user.require_auth();
 
-        if !check_time_bound(&env, &claimable_balance.time_bound) {
-            panic!("time predicate is not fulfilled");
+        let timelock = get_time_lock(&e, &user, lock_id).unwrap_optimized();
+        let current_time = e.ledger().timestamp();
+
+        if current_time < timelock.unlock_time {
+            panic!("tokens are still locked");
         }
 
-        let claimants = &claimable_balance.claimants;
-        if !claimants.contains(&claimant) {
-            panic!("claimant is not allowed to claim this balance");
-        }
+        let amount = timelock.amount;
+        
+        // Set amount to zero but keep the lock structure for history
+        let updated_lock = TimeLock {
+            lock_id: timelock.lock_id,
+            amount: 0,
+            unlock_time: timelock.unlock_time,
+            max_amount: timelock.max_amount,
+        };
+        
+        e.storage().instance().set(&DataKey::TimeLock(user.clone(), lock_id), &updated_lock);
 
-        // Transfer the stored amount of token to claimant after passing
-        // all the checks.
-        token::Client::new(&env, &claimable_balance.token).transfer(
-            &env.current_contract_address(),
-            &claimant,
-            &claimable_balance.amount,
-        );
-        // Remove the balance entry to prevent any further claims.
-        env.storage().instance().remove(&DataKey::Balance);
+        // Transfer tokens from contract to user
+        let client = token::Client::new(&e, &token_id);
+        client.transfer(&e.current_contract_address(), &user, &amount);
+
+        amount
     }
-    
-    // New method to get all contracts initialized by a specific address
-    pub fn get_contracts_by_initializer(env: Env, initializer: Address) -> Vec<Address> {
-        env.storage()
-            .persistent()
-            .get(&(DataKey::DeployedContracts, initializer))
-            .unwrap_or_else(|| Vec::new(&env))
+
+    pub fn get_timelock(e: Env, user: Address, lock_id: u64) -> Option<TimeLock> {
+        get_time_lock(&e, &user, lock_id)
     }
-    
-    // Optional: Get the initializer of the current contract
-    pub fn get_initializer(env: Env) -> Address {
-        env.storage().instance().get(&DataKey::Initializer).unwrap()
+
+    pub fn get_user_timelocks(e: Env, user: Address) -> Vec<TimeLock> {
+        let lock_ids = get_user_locks(&e, &user);
+        let mut locks = Vec::new(&e);
+        
+        for i in 0..lock_ids.len() {
+            let lock_id = lock_ids.get(i).unwrap_optimized();
+            if let Some(lock) = get_time_lock(&e, &user, lock_id) {
+                locks.push_back(lock);
+            }
+        }
+        
+        locks
+    }
+
+    pub fn get_all_users_with_locks(e: Env, admin: Address) -> Vec<Address> {
+        verify_admin(&e, &admin);
+        
+        // Similar to the previous version, this would require maintaining a separate list
+        // of all users with locks. This is a placeholder.
+        Vec::new(&e)
+    }
+
+    pub fn get_lock_status(e: Env, user: Address, lock_id: u64) -> (i128, u64, bool) {
+        match get_time_lock(&e, &user, lock_id) {
+            Some(timelock) => {
+                let current_time = e.ledger().timestamp();
+                let is_unlocked = current_time >= timelock.unlock_time;
+                (timelock.amount, timelock.unlock_time, is_unlocked)
+            }
+            None => (0, 0, false),
+        }
     }
 }
-
-fn is_initialized(env: &Env) -> bool {
-    env.storage().instance().has(&DataKey::Init)
-}
-
-mod test;
