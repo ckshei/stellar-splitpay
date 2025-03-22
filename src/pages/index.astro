@@ -2,12 +2,15 @@
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 import helloWorld from "../contracts/hello_world";
+import ConnectWallet from '../components/ConnectWallet.astro'
+import Counter from '../components/Counter.astro';
 const { result } = await helloWorld.hello({ to: "you" });
 const greeting = result.join(" ");
 ---
 
 <script is:inline>var global = global || window;</script>
 <Layout title={greeting}>
+<ConnectWallet />
 	<main>
 		<svg
 			class="astro-a"
@@ -39,8 +42,7 @@ const greeting = result.join(" ");
 		</svg>
 		<h1>{greeting}</h1>
 		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
+			<Counter />
 		</p>
 		<ul role="list" class="link-card-grid">
 			<Card
