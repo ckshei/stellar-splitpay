@@ -1,20 +1,81 @@
-# Soroban Frontend in Astro
+# 💸 Payment Splitter Factory
 
-A Frontend Template suitable for use with `soroban contract init --frontend-template`, powered by [Astro](https://astro.build/).
+A **smart contract factory** that creates **payment splitter contracts** to automatically distribute token balances between multiple recipients based on predefined percentages.
 
-# Getting Started
+This solution is already live across multiple chains:
 
-- `cp .env.example .env`
-- `npm install`
-- `npm run dev`
+- 🟡 **Stellar (Soroban)** – `payment_splitter`
+- 🌀 **Polkadot (Ink!)** – `split_contract`
+- 🟣 **zkSync** – `zk-splitter`
+- 🔵 **Mantle** – `mantle-splitter`
 
-# How it works
+Use cases include:
+- Splitting crypto grants or revenue
+- Royalties for music, NFTs, or content
+- Real estate income sharing (RWA)
+- Revenue sharing among co-founders, investors, or DAOs
 
-If you look in [package.json](./package.json), you'll see that the `start` & `dev` scripts first run the [`initialize.js`](./initialize.js) script. This script loops over all contracts in `contracts/*` and, for each:
+---
 
-1. Deploys to a local network (_needs to be running with `docker run` or `soroban network start`_)
-2. Saves contract IDs to `.soroban/contract-ids`
-3. Generates TS bindings for each into the `packages` folder, which is set up as an [npm workspace](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#workspaces)
-4. Create a file in `src/contracts` that imports the contract client and initializes it for the `standalone` network.
+## 🏭 How It Works
 
-You're now ready to import these initialized contract clients in your [Astro templates](https://docs.astro.build/en/core-concepts/astro-syntax/) or your [React, Svelte, Vue, Alpine, Lit, and whatever else JS files](https://docs.astro.build/en/core-concepts/framework-components/#official-ui-framework-integrations). You can see an example of this in [index.astro](./src/pages/index.astro).
+### ✅ Factory Pattern
+- A **Factory Contract** deploys multiple **Splitter Contracts** with unique configurations.
+- Each Splitter Contract is **immutable** and **fully on-chain**.
+
+### 🔁 Splitter Logic
+Each deployed splitter contract:
+1. Accepts token transfers directly.
+2. Stores a list of recipients and their share (in basis points).
+3. When `pay()` is called:
+   - Reads the current balance of a specific token.
+   - Splits the full balance.
+   - Sends funds to each recipient accordingly.
+
+No manual calculations, no spreadsheets, no custodians.
+
+---
+
+## ✨ Features
+
+- 🔐 Trustless and transparent
+- 🚀 Works with any standard token (USDC, wrapped assets, etc.)
+- 📊 View functions to read:
+  - Current token balance
+  - Recipient list and allocations
+- 🧩 Chain-agnostic architecture
+- 🔁 Portable across Stellar, zkSync, Mantle, and Polkadot
+
+---
+
+## 🌐 Multi-Chain Implementation
+
+| Chain        | Contract Name     | Language       |
+|--------------|-------------------|----------------|
+| Stellar      | `payment_splitter`| Rust (Soroban) |
+| Polkadot     | `split_contract`  | Ink!           |
+| zkSync       | `zk-splitter`     | Solidity       |
+| Mantle       | `mantle-splitter` | Solidity       |
+
+All implementations follow the same factory/deployer model, enabling a shared frontend and common user experience across ecosystems.
+
+---
+
+## 📦 Use Cases
+
+| Use Case                   | Example                                                                 |
+|----------------------------|-------------------------------------------------------------------------|
+| Hackathon Teams            | Split grant or prize winnings among members                            |
+| Real Estate / RWA          | Distribute rental income to multiple owners                            |
+| Royalties for Creators     | Stream earnings to artists, producers, and collaborators automatically |
+| Startup Revenue Sharing    | Pay investors and co-founders based on pre-agreed splits               |
+| DAOs / Collectives         | Reward contributors based on contribution levels                       |
+
+---
+
+## 📄 Interface (Stellar Version)
+
+```rust
+pub fn pay(env: Env, token: Address);
+pub fn get_balance(env: Env, token: Address) -> i128;
+pub fn get_recipients(env: Env) -> Vec<(Address, u32)>;
